@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyAgroTech DerivSim: MD2 Growth Calculus</title>
+    <!-- Tailwind CSS for high-end styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- KaTeX for beautiful math equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Main Header -->
+    <header class="bg-gradient-to-r from-emerald-800 to-teal-700 text-white shadow-md border-b border-emerald-950">
+        <div class="max-content-xl mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white text-emerald-800 p-2 rounded-lg shadow-inner">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">MyAgroTech DerivSim</h1>
+                    <p class="text-xs md:text-sm text-emerald-200">Interactive Growth Calculus of MD2 Pineapple (*Ananas comosus*)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 bg-emerald-900/40 px-3 py-1.5 rounded-full border border-emerald-600/30">
+                <span class="inline-block w-2.5 h-2.5 bg-green-400 rounded-full animate-ping"></span>
+                <span class="text-xs font-semibold text-emerald-100">Bioscience & Agrotech Lab</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-[1400px] w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Sidebar: Mathematical Modeling & Inputs -->
+        <section class="lg:col-span-4 space-y-6">
+            
+            <!-- Context & Scenario -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center space-x-2 mb-3">
+                    <span class="px-2 py-0.5 text-xs font-bold text-emerald-800 bg-emerald-100 rounded-full uppercase">Malaysian Scenario</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">MD2 Pineapple Biomass Accumulation</h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                    In tropical Malaysia (e.g., Simpang Renggam, Johor), the MD2 cultivar undergoes a ~40-week vegetative cycle. Predicting when biomass accumulation is at its maximum absolute rate is essential for optimal fertilizer application (high NPK requirement) and predicting hormonal flower induction (forcing). 
+                </p>
+                <div class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-200/60">
+                    <span class="font-bold text-slate-700">Realistic Reference Data:</span> 
+                    Modified from MARDI crop growth models & Department of Agriculture (DoA) Malaysia guidelines.
+                    <a href="https://www.mardi.gov.my" target="_blank" class="text-emerald-600 hover:underline block mt-1 font-medium">🌐 MARDI Research Portal</a>
+                </div>
+            </div>
+
+            <!-- Mathematical Formulas (KaTeX) -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="text-md font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 11h.01M12 7h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    Calculus Formulation
+                </h3>
+                
+                <div class="space-y-4">
+                    <!-- Logistic Growth Formula -->
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-emerald-800 block mb-1">Growth Function $f(x)$ (Logistic Sigmoid):</span>
+                        <div class="py-2 text-center text-sm font-semibold text-slate-800">
+                            $$f(x) = \frac{L}{1 + e^{-k(x - x_0)}}$$
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                            Models cumulative wet weight biomass in grams over time $x$ (weeks).
+                        </p>
+                    </div>
+
+                    <!-- Derivative Formula -->
+                    <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100">
+                        <span class="text-xs font-bold text-emerald-800 block mb-1">First Derivative $f'(x)$ (Instantaneous Growth Rate):</span>
+                        <div class="py-2 text-center text-sm font-semibold text-emerald-950">
+                            $$f'(x) = \frac{L \cdot k \cdot e^{-k(x - x_0)}}{(1 + e^{-k(x - x_0)})^2}$$
+                        </div>
+                        <p class="text-[11px] text-emerald-800/80 mt-1 leading-relaxed">
+                            Represents the *instantaneous growth rate* (grams per week). This tells us how fast the vegetative crop tissue is expanding right at week $x$.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Parameters Control -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h3 class="text-md font-bold text-slate-800 flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        Crop Parameters
+                    </span>
+                    <button id="btnReset" class="text-xs text-emerald-600 font-semibold hover:text-emerald-800 transition">Reset</button>
+                </h3>
+
+                <!-- Carrying Capacity (L) -->
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-semibold">
+                        <span class="text-slate-600">Max Biomass ($L$):</span>
+                        <span id="valL" class="text-emerald-700 font-bold">1500 g</span>
+                    </div>
+                    <input type="range" id="paramL" min="800" max="2500" step="50" value="1500" class="w-full accent-emerald-600 cursor-pointer">
+                    <span class="text-[10px] text-slate-400 block">Biological limit based on field density and soil fertility.</span>
+                </div>
+
+                <!-- Growth Rate (k) -->
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-semibold">
+                        <span class="text-slate-600">Growth Intensity ($k$):</span>
+                        <span id="valK" class="text-emerald-700 font-bold">0.18</span>
+                    </div>
+                    <input type="range" id="paramK" min="0.10" max="0.35" step="0.01" value="0.18" class="w-full accent-emerald-600 cursor-pointer">
+                    <span class="text-[10px] text-slate-400 block font-light">Influenced by local temperature, sun hours, and genetics.</span>
+                </div>
+
+                <!-- Inflection Point (x0) -->
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-semibold">
+                        <span class="text-slate-600">Inflection Point ($x_0$):</span>
+                        <span id="valX0" class="text-emerald-700 font-bold">Week 20</span>
+                    </div>
+                    <input type="range" id="paramX0" min="10" max="30" step="1" value="20" class="w-full accent-emerald-600 cursor-pointer">
+                    <span class="text-[10px] text-slate-400 block">The target week of fastest growth. Transition point.</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Main Workspace: Chart, Plant Visualizer, Analysis Dashboard -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+
+            <!-- Interactive Visualization Canvas -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-4 mb-4 gap-2">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Dynamic Growth Calculus Dashboard</h2>
+                        <p class="text-xs text-slate-500">Click anywhere on the chart area to inspect rates and tangent slopes.</p>
+                    </div>
+                    
+                    <!-- Timeline Control and Play Button -->
+                    <div class="flex items-center space-x-2">
+                        <button id="btnPlay" class="flex items-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition-all">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            <span>Animate Cycle</span>
+                        </button>
+                        <button id="btnStop" class="hidden flex items-center space-x-1.5 bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow transition-all">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            <span>Stop</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="relative w-full h-[320px] md:h-[380px]">
+                    <canvas id="growthChart"></canvas>
+                </div>
+                
+                <div class="mt-4 flex flex-wrap justify-center gap-4 text-xs">
+                    <span class="flex items-center gap-1.5 text-slate-600">
+                        <span class="w-3.5 h-1.5 bg-emerald-600 rounded-sm"></span>
+                        $f(x)$ Biomass Curve (g)
+                    </span>
+                    <span class="flex items-center gap-1.5 text-slate-600">
+                        <span class="w-3.5 h-1.5 bg-teal-400 rounded-sm"></span>
+                        $f'(x)$ Growth Rate (g/week)
+                    </span>
+                    <span class="flex items-center gap-1.5 text-slate-600">
+                        <span class="w-3.5 h-0.5 border-t border-dashed border-rose-500"></span>
+                        Local Tangent Line (Slope = $f'(x)$)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Interactive Real-time Calculator & Dynamic Plant Visualizer -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                
+                <!-- Dynamic SVG Pineapple Plant (Col 4) -->
+                <div class="md:col-span-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-between min-h-[250px]">
+                    <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest text-center">Physical Growth</h4>
+                    
+                    <!-- Growing Pineapple Vector Animation Frame -->
+                    <div class="relative w-40 h-40 flex items-center justify-center overflow-hidden">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <!-- Background ground circle -->
+                            <circle cx="50" cy="85" r="18" fill="#e2e8f0" />
+                            <ellipse cx="50" cy="85" rx="14" ry="4" fill="#cbd5e1" />
+                            
+                            <!-- Root section / Stem base -->
+                            <path d="M 46,84 C 48,82 52,82 54,84 L 52,86 L 48,86 Z" fill="#78350f" />
+                            
+                            <g id="plantTransform" transform="scale(0.5) translate(50, 60)" style="transform-origin: 50px 85px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                                <!-- Leaves (Vegetative shoot) -->
+                                <!-- Dynamic leaf colors shifting from pale green to dark forest green as plants age -->
+                                <path id="leafOuterL" d="M 50,85 C 30,80 20,70 15,55 C 22,60 35,75 50,85 Z" fill="#10b981" />
+                                <path id="leafOuterR" d="M 50,85 C 70,80 80,70 85,55 C 78,60 65,75 50,85 Z" fill="#10b981" />
+                                
+                                <path id="leafMidL" d="M 50,85 C 35,75 25,55 30,35 C 38,50 45,70 50,85 Z" fill="#059669" />
+                                <path id="leafMidR" d="M 50,85 C 65,75 75,55 70,35 C 62,50 55,70 50,85 Z" fill="#059669" />
+                                
+                                <path id="leafInner" d="M 50,85 C 45,65 40,40 50,15 C 60,40 55,65 50,85 Z" fill="#047857" />
+                                
+                                <!-- MD2 Fruit Crown - Grows only in reproductive phase (Weeks > 25) -->
+                                <g id="fruitGroup" transform="translate(50, 60) scale(0)" style="transform-origin: 0px 0px; transition: transform 0.3s ease;">
+                                    <!-- MD2 Pineapple body -->
+                                    <ellipse cx="0" cy="-22" rx="12" ry="16" fill="#f59e0b" stroke="#d97706" stroke-width="1.5" />
+                                    <!-- Fruit segments texture -->
+                                    <path d="M -8,-30 L 8,-14 M -10,-24 L 10,-24 M -8,-14 L 8,-30 M -12,-20 L 12,-20 M -6,-34 L 6,-34" stroke="#d97706" stroke-width="1" />
+                                    
+                                    <!-- Small Crown top leaves -->
+                                    <path d="M 0,-38 C -4,-45 -10,-48 -12,-52 C -5,-48 0,-44 0,-38 Z" fill="#047857" />
+                                    <path d="M 0,-38 C 4,-45 10,-48 12,-52 C 5,-48 0,-44 0,-38 Z" fill="#047857" />
+                                    <path d="M 0,-38 C 0,-48 0,-52 0,-55 C 3,-48 0,-42 0,-38 Z" fill="#065f46" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-[10px] text-slate-400">Biological Age Representation</span>
+                        <div id="visualPhaseText" class="text-xs font-bold text-emerald-800">Establishment Phase</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Calculus Diagnostics Dashboard (Col 8) -->
+                <div class="md:col-span-8 bg-gradient-to-br from-slate-900 to-emerald-950 text-white p-6 rounded-2xl shadow-lg border border-emerald-900/40 flex flex-col justify-between">
+                    <div>
+                        <!-- Active Point Header -->
+                        <div class="flex justify-between items-center border-b border-emerald-900/60 pb-3 mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold tracking-tight text-emerald-300 flex items-center gap-1.5">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                                    Growth Diagnostic
+                                </h3>
+                                <p class="text-[11px] text-emerald-400 font-mono">MD2-VIGOR MODEL v1.2</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-slate-400 text-[10px] uppercase block tracking-wider">Time Interval</span>
+                                <span id="diagWeek" class="text-xl font-black text-yellow-300">Week 20</span>
+                            </div>
+                        </div>
+
+                        <!-- Math Readouts -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+                                <span class="text-[10px] text-emerald-400 uppercase tracking-wider block font-bold">Biomass $f(x)$</span>
+                                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                                    <span id="diagBiomass" class="text-2xl font-bold tracking-tight text-white">750.0</span>
+                                    <span class="text-xs text-slate-300">g</span>
+                                </div>
+                                <span class="text-[9px] text-slate-400 block mt-1">Cumulative wet weight</span>
+                            </div>
+
+                            <div class="bg-emerald-900/30 p-3 rounded-xl border border-emerald-800/50">
+                                <span class="text-[10px] text-yellow-300 uppercase tracking-wider block font-bold">Slope / Rate $f'(x)$</span>
+                                <div class="flex items-baseline space-x-1.5 mt-0.5">
+                                    <span id="diagRate" class="text-2xl font-bold tracking-tight text-yellow-300">67.5</span>
+                                    <span class="text-xs text-yellow-100">g/wk</span>
+                                </div>
+                                <span class="text-[9px] text-emerald-300 block mt-1">Instantaneous velocity</span>
+                            </div>
+                        </div>
+
+                        <!-- Layman Explainer Section -->
+                        <div class="space-y-2 mb-4">
+                            <h4 class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                                <span class="inline-block w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>
+                                Layman's Crop Explanation
+                            </h4>
+                            <p id="laymanText" class="text-xs text-slate-200 leading-relaxed italic bg-emerald-950/50 p-3 rounded-xl border border-emerald-900/50">
+                                "At Week 20, your MD2 pineapple plant is growing at its peak speed of 67.5 grams per week. This is the physiological prime of its vegetative lifecycle! Ensure maximum Nitrogen fertilizer availability."
+                            </p>
+                        </div>
+
+                        <!-- Scientific Explainer Section -->
+                        <div class="space-y-1">
+                            <h4 class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                                <span class="inline-block w-1.5 h-1.5 bg-sky-400 rounded-full"></span>
+                                Bioscience Deep-Dive
+                            </h4>
+                            <p id="scienceText" class="text-[11px] text-slate-300 leading-relaxed">
+                                Physiological explanation loading...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 py-6 border-t border-slate-900 mt-12 text-center text-xs">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>© 2026 Malaysia Agrotech Sustainable Food & Agriculture Initiative. Designed for Undergraduate Agrotechnology Bioscience.</p>
+            <p class="text-[11px] text-slate-600">Dynamic model equations solved live using standard derivative calculations: $f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$ equivalents in local analytical space.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Global Parameters & Constants ---
+        let L = 1500;   // Carrying capacity (g)
+        let k = 0.18;   // Growth coefficient
+        let x0 = 20;    // Inflection point (week)
+        let activeX = 20; // Currently selected week index/value
+        let animationInterval = null;
+
+        // Color palettes
+        const EMERALD_COLOR = 'rgba(5, 150, 105, 0.9)';
+        const TEAL_LIGHT_COLOR = 'rgba(45, 212, 191, 0.7)';
+        const TANGENT_COLOR = 'rgba(239, 68, 68, 1)'; // Rose red for clear geometry tangent
+
+        // --- 2. Bioscience Math Solver Functions ---
+        // f(x) Logistic curve function
+        function f(x, pL = L, pK = k, pX0 = x0) {
+            return pL / (1 + Math.exp(-pK * (x - pX0)));
+        }
+
+        // f'(x) Analytical First Derivative
+        function fPrime(x, pL = L, pK = k, pX0 = x0) {
+            const expTerm = Math.exp(-pK * (x - pX0));
+            const denominator = Math.pow(1 + expTerm, 2);
+            return (pL * pK * expTerm) / denominator;
+        }
+
+        // Get tangent points based on selected coordinate
+        // Generates an array of points for ChartJS representing a linear tangent line localized around point 'xCoord'
+        function getTangentDatasetPoints(xCoord, pL = L, pK = k, pX0 = x0) {
+            const yCoord = f(xCoord, pL, pK, pX0);
+            const slope = fPrime(xCoord, pL, pK, pX0);
+            
+            const linePoints = [];
+            // We want the tangent line to span a local window (e.g., activeX - 6 to activeX + 6) 
+            const windowSize = 6;
+            const minX = Math.max(0, xCoord - windowSize);
+            const maxX = Math.min(45, xCoord + windowSize);
+
+            for (let x = 0; x <= 45; x++) {
+                if (x >= minX && x <= maxX) {
+                    // Line equation: y = m(x - x_1) + y_1
+                    const y = slope * (x - xCoord) + yCoord;
+                    linePoints.push({ x: x, y: y });
+                } else {
+                    linePoints.push({ x: x, y: null }); // Keep rest of points null to restrict rendering span
+                }
+            }
+            return linePoints;
+        }
+
+        // --- 3. Interactive Data Generator ---
+        function generateChartData() {
+            const labels = [];
+            const biomassData = [];
+            const growthRateData = [];
+
+            for (let week = 0; week <= 45; week++) {
+                labels.push(week);
+                biomassData.push(f(week).toFixed(1));
+                growthRateData.push(fPrime(week).toFixed(2));
+            }
+
+            return { labels, biomassData, growthRateData };
+        }
+
+        // --- 4. ChartJS Implementation ---
+        let growthChart;
+        const ctx = document.getElementById('growthChart').getContext('2d');
+
+        function initChart() {
+            const initialData = generateChartData();
+            const tangentPoints = getTangentDatasetPoints(activeX);
+
+            growthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: initialData.labels,
+                    datasets: [
+                        {
+                            label: 'Biomass f(x)',
+                            data: initialData.biomassData,
+                            borderColor: EMERALD_COLOR,
+                            backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                            fill: true,
+                            tension: 0.2,
+                            yAxisID: 'yBiomass',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            pointHitRadius: 10,
+                            order: 2
+                        },
+                        {
+                            label: 'Growth Rate f\'(x)',
+                            data: initialData.growthRateData,
+                            borderColor: TEAL_LIGHT_COLOR,
+                            backgroundColor: 'transparent',
+                            tension: 0.2,
+                            yAxisID: 'yRate',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            order: 3
+                        },
+                        {
+                            label: 'Local Tangent',
+                            data: tangentPoints,
+                            borderColor: TANGENT_COLOR,
+                            borderWidth: 2.5,
+                            fill: false,
+                            pointRadius: 0,
+                            yAxisID: 'yBiomass',
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // We use our own custom HTML legends
+                        },
+                        tooltip: {
+                            enabled: false // Custom overlay panel is much cleaner and more accessible
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time (Weeks of Cultivation)',
+                                font: { weight: 'bold', size: 11 },
+                                color: '#475569'
+                            },
+                            grid: {
+                                color: 'rgba(241, 245, 249, 1)'
+                            }
+                        },
+                        yBiomass: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Biomass Accumulation (grams)',
+                                font: { weight: 'bold', size: 11 },
+                                color: '#047857'
+                            },
+                            grid: {
+                                color: 'rgba(241, 245, 249, 1)'
+                            },
+                            min: 0,
+                            max: Math.ceil(L / 100) * 100 + 200
+                        },
+                        yRate: {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Rate of Change f\'(x) (g/week)',
+                                font: { weight: 'bold', size: 11 },
+                                color: '#0d9488'
+                            },
+                            grid: {
+                                drawOnChartArea: false // Prevents overlapping horizontal grid lines
+                            },
+                            min: 0,
+                            max: Math.ceil((L * k / 4) / 10) * 10 + 10
+                        }
+                    },
+                    onClick: (event, activeElements) => {
+                        // Support custom canvas click mapping to nearest X value
+                        const points = growthChart.getElementsAtEventForMode(event, 'nearest', { intersect: false }, true);
+                        if (points.length) {
+                            const firstPoint = points[0];
+                            const clickedX = growthChart.data.labels[firstPoint.index];
+                            updateActiveTime(clickedX);
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 5. Interactive Update Master Sync ---
+        function updateActiveTime(week) {
+            activeX = parseInt(week);
+            if (activeX < 0) activeX = 0;
+            if (activeX > 45) activeX = 45;
+
+            // Update Tangent Dataset on Chart
+            const newTangent = getTangentDatasetPoints(activeX);
+            growthChart.data.datasets[2].data = newTangent;
+            growthChart.update('none'); // Quick update without disturbing user's visual continuity
+
+            // Calculate calculations for Dashboard
+            const currentBiomass = f(activeX);
+            const currentRate = fPrime(activeX);
+
+            // Populate calculations in UI
+            document.getElementById('diagWeek').innerText = `Week ${activeX}`;
+            document.getElementById('diagBiomass').innerText = currentBiomass.toFixed(1);
+            document.getElementById('diagRate').innerText = currentRate.toFixed(2);
+
+            // Update Dynamic SVGs and agronomy text
+            updateSVGVisualization(activeX, currentBiomass);
+            updateAdvisoryTexts(activeX, currentBiomass, currentRate);
+        }
+
+        // Dynamic change of Pineapple crop model size and fruiting triggers
+        function updateSVGVisualization(week, biomass) {
+            const scaleFactor = 0.3 + (biomass / L) * 0.7; // Maps growth to vector scale dynamically
+            const plantGroup = document.getElementById('plantTransform');
+            const fruitGroup = document.getElementById('fruitGroup');
+            
+            // Scaled matrix
+            plantGroup.setAttribute('transform', `scale(${scaleFactor}) translate(50, ${100 - (scaleFactor * 40)})`);
+
+            // Phase and color triggers based on plant vegetative age
+            const leafOuterL = document.getElementById('leafOuterL');
+            const leafOuterR = document.getElementById('leafOuterR');
+            const leafMidL = document.getElementById('leafMidL');
+            const leafMidR = document.getElementById('leafMidR');
+            const leafInner = document.getElementById('leafInner');
+            const phaseText = document.getElementById('visualPhaseText');
+
+            if (week <= 12) {
+                // Young establishment
+                leafOuterL.setAttribute('fill', '#a7f3d0');
+                leafOuterR.setAttribute('fill', '#a7f3d0');
+                leafMidL.setAttribute('fill', '#34d399');
+                leafMidR.setAttribute('fill', '#34d399');
+                leafInner.setAttribute('fill', '#059669');
+                fruitGroup.setAttribute('transform', 'translate(50, 60) scale(0)');
+                phaseText.innerText = "Establishment Phase (Slow Growth)";
+                phaseText.className = "text-xs font-bold text-teal-600";
+            } else if (week > 12 && week <= 28) {
+                // High growth vegetative expansion
+                leafOuterL.setAttribute('fill', '#34d399');
+                leafOuterR.setAttribute('fill', '#34d399');
+                leafMidL.setAttribute('fill', '#059669');
+                leafMidR.setAttribute('fill', '#059669');
+                leafInner.setAttribute('fill', '#047857');
+                fruitGroup.setAttribute('transform', 'translate(50, 60) scale(0)');
+                phaseText.innerText = "Logarithmic Surge Phase (Fast Growth)";
+                phaseText.className = "text-xs font-bold text-amber-600 animate-pulse";
+            } else if (week > 28) {
+                // Hormonal/Flower Induction (Ethrel induction window begins)
+                leafOuterL.setAttribute('fill', '#047857');
+                leafOuterR.setAttribute('fill', '#047857');
+                leafMidL.setAttribute('fill', '#065f46');
+                leafMidR.setAttribute('fill', '#065f46');
+                leafInner.setAttribute('fill', '#022c22');
+                
+                // Show fruit scaling up with reproductive timeline
+                const fruitScale = Math.min(1.2, (week - 28) / 12);
+                fruitGroup.setAttribute('transform', `translate(0, -35) scale(${fruitScale})`);
+                
+                if (week < 36) {
+                    phaseText.innerText = "Inflorescence & Flower Development";
+                    phaseText.className = "text-xs font-bold text-rose-600";
+                } else {
+                    phaseText.innerText = "Fruit Maturation & Ripening";
+                    phaseText.className = "text-xs font-bold text-yellow-600";
+                }
+            }
+        }
+
+        // --- 6. Agronomic Layman & Bioscience Advisory Expert Engine ---
+        function updateAdvisoryTexts(week, biomass, rate) {
+            const laymanElement = document.getElementById('laymanText');
+            const scienceElement = document.getElementById('scienceText');
+
+            let layman = "";
+            let science = "";
+
+            // Dynamic logic checking week threshold and biological rate of change
+            if (week <= 10) {
+                layman = `At Week ${week}, the pineapple root structure is establishing in the soil. Cumulative biomass is very low (${biomass.toFixed(0)}g) and growth is sluggish (${rate.toFixed(1)}g/week). Adding light Nitrogen and starter phosphorus promotes early root ramification.`;
+                science = `**Lag Growth Phase & Root Architecture:** Low vegetative velocity $f'(x)$ is caused by high mechanical transplant stress and raw development of primary adventitious roots. Low sink capacity limits photosynthesis. Auxin levels are concentrated on rooting pathways.`;
+            } else if (week > 10 && week <= 18) {
+                layman = `The plant is enters the prime vegetative velocity at Week ${week}. Wet biomass is rising up to ${biomass.toFixed(0)}g, and expanding at ${rate.toFixed(1)} grams each week! Highly critical to apply granular NPK (fertilizer round 1 & 2) to fuel structural leaf cell elongation.`;
+                science = `**Logarithmic Phase & Cellular Proliferation:** Instantaneous growth velocity $f'(x)$ increases rapidly here because root absorption is maximized. Foliar active nitrogen acts as a key component of Rubisco enzymes. Slope of $f(x)$ is accelerating: $f''(x) > 0$.`;
+            } else if (week > 18 && week <= 22) {
+                // Peak inflection window
+                layman = `Your MD2 Pineapple plant has hit its **physiological peak growth velocity** (${rate.toFixed(1)} g/week) around Week ${week}! This is the inflection point where the rate of change reaches its maximum value. Make sure watering is optimal and leaves remain healthy.`;
+                science = `**Biological Inflection Point & Peak Derivative Value:** At Week ${week}, $f''(x) = 0$, meaning vegetative growth rate $f'(x)$ is mathematically maximized. This represents the peak of absolute sink demand. Intercepting sunlight via expansive leaf surface area reaches optimum efficiency.`;
+            } else if (week > 22 && week <= 29) {
+                layman = `Cumulative weight is almost full (${biomass.toFixed(0)}g), but the weekly growth pace is slowing down to ${rate.toFixed(1)}g/week. The plant is structurally mature enough for farmers to apply Ethrel hormonal spray (locally known as "bunga booster") to trigger synchronized flowering.`;
+                science = `**Asymptotic Phase & Transition to Reproductive Sinks:** Growth rate $f'(x)$ decelerates as vegetative space fills ($f''(x) < 0$). Hormonal changes signal the apex tissue to cease new leaf production in preparation for floral morphogenesis.`;
+            } else if (week > 29 && week <= 37) {
+                layman = `Vegetative vegetative growth has almost ceased (${rate.toFixed(1)}g/week), but a small pineapple fruit is visible! Resources are shifting from the green leaves to the growing fruit crown. Ensure soil potassium levels are high for premium sugar development.`;
+                science = `**Reproductive Phase Transition:** The vegetative derivative $f'(x)$ approaches $0$ because the active meristem has differentiated into floral tissues. Photo-assimilates undergo systemic transport from source leaves to developing fruit sink.`;
+            } else {
+                layman = `At Week ${week}, the MD2 pineapple has reached harvest weight (~${biomass.toFixed(0)}g) and growth rate is practically zero. It is ready to cut and ship to local markets in Kuala Lumpur or export abroad!`;
+                science = `**Biological Asymptote (Maturity Phase):** Crop cumulative biomass reaches carrying capacity $L$. Growth rate $f'(x) \approx 0$. Carbohydrate concentration transitions to sucrose conversion in the fruit flesh, driven by active proton pumps.`;
+            }
+
+            laymanElement.innerHTML = `"${layman}"`;
+            scienceElement.innerHTML = science;
+        }
+
+        // --- 7. Event Handlers & Sliders UI Sync ---
+        function updateModelParameters() {
+            L = parseFloat(document.getElementById('paramL').value);
+            k = parseFloat(document.getElementById('paramK').value);
+            x0 = parseInt(document.getElementById('paramX0').value);
+
+            // Update label readings
+            document.getElementById('valL').innerText = `${L} g`;
+            document.getElementById('valK').innerText = `${k.toFixed(2)}`;
+            document.getElementById('valX0').innerText = `Week ${x0}`;
+
+            // Adjust graph axes limits based on updated Carrying Capacity & rates
+            growthChart.options.scales.yBiomass.max = Math.ceil(L / 100) * 100 + 200;
+            const maxRateEst = (L * k) / 4;
+            growthChart.options.scales.yRate.max = Math.ceil(maxRateEst / 10) * 10 + 10;
+
+            // Recalculate whole dataset
+            const updatedData = generateChartData();
+            growthChart.data.datasets[0].data = updatedData.biomassData;
+            growthChart.data.datasets[1].data = updatedData.growthRateData;
+
+            // Maintain current active position
+            updateActiveTime(activeX);
+        }
+
+        // Connect inputs to calculation updates
+        document.getElementById('paramL').addEventListener('input', updateModelParameters);
+        document.getElementById('paramK').addEventListener('input', updateModelParameters);
+        document.getElementById('paramX0').addEventListener('input', updateModelParameters);
+
+        // Reset parameters to realistic baseline
+        document.getElementById('btnReset').addEventListener('click', () => {
+            document.getElementById('paramL').value = 1500;
+            document.getElementById('paramK').value = 0.18;
+            document.getElementById('paramX0').value = 20;
+            updateModelParameters();
+        });
+
+        // Animation Timeline Loop
+        const btnPlay = document.getElementById('btnPlay');
+        const btnStop = document.getElementById('btnStop');
+
+        function startTimelineAnimation() {
+            btnPlay.classList.add('hidden');
+            btnStop.classList.remove('hidden');
+            
+            let animWeek = 0;
+            updateActiveTime(animWeek);
+
+            animationInterval = setInterval(() => {
+                animWeek++;
+                if (animWeek > 45) {
+                    stopTimelineAnimation();
+                } else {
+                    updateActiveTime(animWeek);
+                }
+            }, 180); // Smooth stepping across time
+        }
+
+        function stopTimelineAnimation() {
+            clearInterval(animationInterval);
+            btnPlay.classList.remove('hidden');
+            btnStop.classList.add('hidden');
+        }
+
+        btnPlay.addEventListener('click', startTimelineAnimation);
+        btnStop.addEventListener('click', stopTimelineAnimation);
+
+        // Start initialization routine on windows load
+        window.onload = function() {
+            initChart();
+            updateActiveTime(20); // Focus on biological peak inflection point on default start
+        };
+    </script>
+</body>
+</html>
